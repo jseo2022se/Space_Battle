@@ -9,12 +9,18 @@
 //think about code for multiple ships (enemyship )
 
 
-
+// selecting playerStats HTML element
 let stats = document.querySelector('.playerStats')
 
+// selecting enemyStats HTML element
 let enemyStats = document.querySelector('.enemyStats')
 
-// Ship Factory
+let playerImg = document.querySelector('.playerImage')
+
+let enemyImg = document.querySelector('.enemyImage')
+
+
+// Space Ship class with constructor
 class Ship {
     constructor(Hull, Firepower, Accuracy) {
         this.Hull = Hull,
@@ -23,16 +29,25 @@ class Ship {
     }
 }
 
+
+
 let spaceship = new Ship(20, 5, .7)
 
-let enemyship = new Ship(7, 3, .6)
+let enemyship = new Ship(7, 99, 1)
 
 let enemyship2 = new Ship(8, 4, .5)
 
-let enemies = [enemyship, enemyship2]
+let enemyship3 = new Ship(6, 2, .4)
+
+let enemyship4 = new Ship(5, 3, .4)
+
+let enemyship5 = new Ship(3, 6, .2)
+
+let enemyship6 = new Ship(2, 10, .1)
+
+let enemies = [enemyship, enemyship2, enemyship3, enemyship4, enemyship5, enemyship6]
 
 
-// Setting the initial stats for player ship and first enemy ship
 
 
 // initial prompt when starting game for the first time
@@ -45,33 +60,29 @@ setTimeout(() => {
 
 // function for the game logic
 function startGame () {
-    confirm('Enemy ship spotted!')
+    alert('Enemy ship spotted!')
     
     // start battle function
     if (confirm('Do you want to attack?')) {
-
-        // if else checking how many enemies left?
         
         battle(enemies)
-        // confirm('Escaped from battle') 
+    
     }
 
-    // else when player runs from fight
     else {
-        confirm('GG DIDNT EVEN FIGHT LMAO')
+        alert('GG RAN BEFORE FIGHT STARTED')
     }
-    // confirm('What next?')
 }
 
 
 // function to update enemy stats
 function updateE (invader) {
-    enemyStats.textContent = `Hull: ${invader.Hull} Firepower: ${invader.Firepower} Accuracy: ${invader.Accuracy}`
+    enemyStats.innerHTML = `Hull: ${invader.Hull}<br> Firepower: ${invader.Firepower}<br> Accuracy: ${invader.Accuracy}<br>`
 }
 
 // function to update player stats
 function updateS () {
-    stats.textContent = `Hull: ${spaceship.Hull} Firepower: ${spaceship.Firepower} Accuracy: ${spaceship.Accuracy}`
+    stats.innerHTML = `Hull: ${spaceship.Hull}<br> Firepower: ${spaceship.Firepower}<br> Accuracy: ${spaceship.Accuracy}<br>`
 }
 
 // battle function
@@ -80,19 +91,29 @@ function battle (ships) {
     ourAttack(ships[0])
 }
 
+// new battle function that asks player if they want to continue attacking
 function newBattle () {
 
     if (enemies.length != 0) {
         updateE(enemies[0])
         setTimeout(() => {
             if (confirm('Another ship is in the distance. Attack again?')) {
-            battle(enemies)
-        } else {
-            confirm('Retreated. Game Over')
-        }}, '500')
+                battle(enemies)
+            } else {
+                alert('Retreated. Game Over')
+
+            }}, '800')
     } else {
-        confirm('You Win! GG EZ')
+        alert('You Win! GG EZ')
+        if(confirm('Would you like to try again?')) {
+            location.reload()
+        } else {
+            alert('Thanks for playing. Closing browser window now.')
+            window.close()
+        }
+
     }
+
 }
 
 
@@ -105,35 +126,34 @@ function ourAttack (invader) {
 
         if (invader.Hull <= 0) {
             invader.Hull = 0
+            enemyImg.classList.add('shake')
             updateE(invader)
+
             setTimeout(() => {
-                if(confirm(`You dealt ${spaceship.Firepower}. You win!`)) {
-                    enemies.shift()
-                    newBattle(enemies)
-                } else {
-                    enemies.shift()
-                    newBattle(enemies)
-                }
-            }, '1000')
+                alert(`You dealt ${spaceship.Firepower}. You win!`) 
+                enemies.shift()
+                newBattle(enemies)
+            }, '800')
+
+            setTimeout(() => enemyImg.classList.remove('shake'), '750')
 
         }  else {
-
+            enemyImg.classList.add('shake')
+            
             setTimeout (() => {
-                if (confirm(`Direct hit, you dealt ${spaceship.Firepower} damage`)){
-                    enemyAttack(invader)
-                } else {
-                    enemyAttack(invader)
-                }
-            }, '1000')
+                alert(`Direct hit, you dealt ${spaceship.Firepower} damage`)
+                enemyAttack(invader)
+            }, '800')
+
+            setTimeout(() => enemyImg.classList.remove('shake'), '750')
         }
         
     } else {
+
         setTimeout (() => {
-            if (confirm('You missed!')){
-                enemyAttack(invader)
-            } else {
-                enemyAttack(invader)
-            }}, '1000')
+            alert('You missed!')
+            enemyAttack(invader)
+        }, '800')
     }
 
 }
@@ -148,32 +168,40 @@ function enemyAttack (invader) {
         if (spaceship.Hull <= 0) {
             spaceship.Hull = 0
             updateS()
-            setTimeout(() => {
-                if (confirm(`Enemy dealt ${invader.Firepower}. You lose!`)) {
-                    return
-                } else {
-                    return
-                }
-            }, '1000')
+            playerImg.classList.add('shake')
 
-            }  else {
+            setTimeout(() => {
+                alert(`Enemy dealt ${invader.Firepower}. You lose!`)
+                if (confirm('Would you like to try again?')) {
+                    alert('Restarting game...')
+                    location.reload()
+                } else {
+                    alert('Rest in pizzerino.')
+                    window.close()
+                }
+            }, '800')
+
+            setTimeout(() => playerImg.classList.remove('shake'), '750')
+            
+        }  else {
+
+            playerImg.classList.add('shake')
 
             setTimeout (() => {
-                if (confirm(`Direct hit, enemy dealt ${invader.Firepower} damage`)){
-                    ourAttack(invader)
-                } else {
-                    ourAttack(invader)
-                }
-            }, '1000')
+                alert(`Direct hit, enemy dealt ${invader.Firepower} damage`)
+                playerImg.classList.add('shake')
+                ourAttack(invader)
+            }, '800')
+
+            setTimeout(() => playerImg.classList.remove('shake'), '750')
         }
         
     } else {
         setTimeout (() => {
-            if (confirm('Enemy missed!')){
+            alert('Enemy missed!')
                 ourAttack(invader)
-            } else {
-                ourAttack(invader)
-            }}, '1000')
+            }, '800')
     }
-
+    
 }
+
