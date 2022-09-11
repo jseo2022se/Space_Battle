@@ -33,7 +33,7 @@ class Ship {
 
 let spaceship = new Ship(20, 5, .7)
 
-let enemyship = new Ship(7, 99, 1)
+let enemyship = new Ship(7, 3, .6)
 
 let enemyship2 = new Ship(8, 4, .5)
 
